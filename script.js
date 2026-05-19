@@ -38,6 +38,7 @@ let savedGallery = [];
 let currentViewId = null;
 const isMobileDevice = window.matchMedia('(max-width: 768px)').matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 let previewPlaceholders = [];
+let activeSession = null;
 
 const colorFilters = [
     { id:'none', label:'Normal', css:'none' },
@@ -147,9 +148,14 @@ async function init() {
 }
 
 function getCombinedFilter() {
-    const adjCSS = `brightness(${S.adj.b}%) contrast(${S.adj.c}%) saturate(${S.adj.s}%) sepia(${S.adj.w}%)`;
-    if (S.colorCSS === 'none') return adjCSS;
-    return `${adjCSS} ${S.colorCSS}`;
+    return getCombinedFilterFor(S);
+}
+
+function getCombinedFilterFor(state) {
+    const adj = state.adj || { b: 100, c: 100, s: 100, w: 0 };
+    const adjCSS = `brightness(${adj.b}%) contrast(${adj.c}%) saturate(${adj.s}%) sepia(${adj.w}%)`;
+    if ((state.colorCSS || 'none') === 'none') return adjCSS;
+    return `${adjCSS} ${state.colorCSS}`;
 }
 
 function applyFilters() {
@@ -158,6 +164,35 @@ function applyFilters() {
 
 function getSessionCount() {
     return Math.max(1, S.sessionCount || 3);
+}
+
+function createSessionSnapshot() {
+    return {
+        color: S.color,
+        colorCSS: S.colorCSS,
+        layout: S.layout,
+        sessionCount: getSessionCount(),
+        timer: S.timer,
+        frameBg: { ...S.frameBg },
+        photoBorder: S.photoBorder,
+        text: S.text,
+        date: S.date,
+        photos: [],
+        quote: '',
+        adj: { ...S.adj },
+        facingMode: currentFacingMode,
+    };
+}
+
+function setCaptureLocked(isLocked) {
+    document.querySelectorAll('.sidebar button, .sidebar input, .sidebar textarea').forEach(element => {
+        if (element === btnOpenGallery) return;
+        element.disabled = isLocked;
+    });
+    if (!isLocked) {
+        startBtn.disabled = false;
+    }
+    btnSwitchCam.disabled = isLocked;
 }
 
 function buildPreviewPlaceholders() {
@@ -203,13 +238,32 @@ function buildPreviewPlaceholders() {
 function resetCurrentSession() {
     S.photos = [];
     S.capturing = false;
+    activeSession = null;
     modal.classList.add('hidden');
     photoCounter.classList.add('hidden');
     countdownNum.textContent = '';
     countdownNum.classList.remove('show');
     flashEl.classList.remove('flash');
-    startBtn.disabled = false;
+    setCaptureLocked(false);
     renderPreview();
+}
+
+function exportCanvasDataUrl(sourceCanvas) {
+    const maxSide = isMobileDevice ? 1600 : 2200;
+    const sourceWidth = sourceCanvas.width || 1;
+    const sourceHeight = sourceCanvas.height || 1;
+    const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+
+    if (scale >= 1) {
+        return sourceCanvas.toDataURL('image/jpeg', isMobileDevice ? 0.88 : 0.94);
+    }
+
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = Math.round(sourceWidth * scale);
+    exportCanvas.height = Math.round(sourceHeight * scale);
+    const exportCtx = exportCanvas.getContext('2d');
+    exportCtx.drawImage(sourceCanvas, 0, 0, exportCanvas.width, exportCanvas.height);
+    return exportCanvas.toDataURL('image/jpeg', isMobileDevice ? 0.88 : 0.94);
 }
 
 function buildUI() {
@@ -313,6 +367,17 @@ function buildUI() {
     startBtn.addEventListener('click', captureSession);
     btnClose.addEventListener('click', resetCurrentSession);
     btnRetake.addEventListener('click', resetCurrentSession);
+    btnSaveGallery.addEventListener('click', saveToGallery);
+    btnOpenGallery.addEventListener('click', () => galleryModal.classList.remove('hidden'));
+    galleryClose.addEventListener('click', () => galleryModal.classList.add('hidden'));
+    galleryViewClose.addEventListener('click', () => galleryViewModal.classList.add('hidden'));
+    btnGalleryDelete.addEventListener('click', () => {
+        if (!currentViewId) return;
+        savedGallery = savedGallery.filter(item => item.id !== currentViewId);
+        currentViewId = null;
+        updateGalleryUI();
+        galleryViewModal.classList.add('hidden');
+    });
 
     btnSwitchCam.addEventListener('click', () => {
         currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
@@ -345,25 +410,26 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function captureSession() {
     if (S.capturing) return;
     S.capturing = true;
-    startBtn.disabled = true;
-    S.photos = [];
+    setCaptureLocked(true);
+    const session = createSessionSnapshot();
+    activeSession = session;
     renderPreview();
     
     try {
         const res = await fetch('https://dummyjson.com/quotes/random');
         const data = await res.json();
-        S.quote = data.quote;
+        session.quote = data.quote;
     } catch(e) {
-        S.quote = "Creating beautiful memories ✨";
+        session.quote = "Creating beautiful memories ✨";
     }
 
-    const layout = Composition.getLayoutMetrics(S.layout, getSessionCount());
+    const layout = Composition.getLayoutMetrics(session.layout, session.sessionCount);
     photoCounter.classList.remove('hidden');
 
     for (let i = 0; i < layout.count; i++) {
         counterText.textContent = `${i+1} / ${layout.count}`;
 
-        for (let t = S.timer; t > 0; t--) {
+        for (let t = session.timer; t > 0; t--) {
             countdownNum.textContent = t;
             countdownNum.classList.add('show');
             AudioKit.beep(880);
@@ -374,7 +440,7 @@ async function captureSession() {
         AudioKit.beep(1760, 0.15);
         AudioKit.shutterSound();
         flashEl.classList.add('flash');
-        takePhoto();
+        takePhoto(session);
         renderPreview();
         await sleep(200);
         flashEl.classList.remove('flash');
@@ -383,20 +449,25 @@ async function captureSession() {
     }
 
     photoCounter.classList.add('hidden');
-    renderStrip();
+    renderStrip(session);
     modal.classList.remove('hidden');
+    session.photos = session.photos || [];
+    S.photos = session.photos.slice();
+    S.quote = session.quote;
     S.capturing = false;
+    activeSession = null;
+    setCaptureLocked(false);
     renderPreview();
 }
 
-function takePhoto() {
+function takePhoto(session) {
     const comp = document.createElement('canvas');
     comp.width = video.videoWidth;
     comp.height = video.videoHeight;
     const cc = comp.getContext('2d');
 
-    cc.filter = getCombinedFilter();
-    Composition.drawSourceIntoSlot(cc, video, 0, 0, comp.width, comp.height, currentFacingMode === 'user');
+    cc.filter = getCombinedFilterFor(session);
+    Composition.drawSourceIntoSlot(cc, video, 0, 0, comp.width, comp.height, session.facingMode === 'user');
     cc.filter = 'none';
 
     const photoW = 1200;
@@ -413,25 +484,25 @@ function takePhoto() {
     else { sH = sW / cR; sy = (comp.height - sH)/2; }
 
     pc.drawImage(comp, sx, sy, sW, sH, 0, 0, photoW, photoH);
-    S.photos.push(photo);
+    session.photos.push(photo);
 }
 
-function renderStrip() {
+function renderStrip(session = activeSession || createSessionSnapshot()) {
     Composition.renderComposition(resultCanvas, {
-        layoutKey: S.layout,
-        sessionCount: getSessionCount(),
-        frameBg: S.frameBg,
-        photoBorder: S.photoBorder,
-        text: S.text,
-        date: S.date,
-        quote: S.quote,
-        photos: S.photos,
+        layoutKey: session.layout,
+        sessionCount: session.sessionCount,
+        frameBg: session.frameBg,
+        photoBorder: session.photoBorder,
+        text: session.text,
+        date: session.date,
+        quote: session.quote,
+        photos: session.photos,
         previewMode: false,
-        mirrorLive: currentFacingMode === 'user',
+        mirrorLive: session.facingMode === 'user',
         scale: 1,
     });
-    btnDownload.href = resultCanvas.toDataURL('image/png');
-    btnDownload.download = `StudioBooth_${Date.now()}.png`;
+    btnDownload.href = exportCanvasDataUrl(resultCanvas);
+    btnDownload.download = `PhotoBoothAjah_${Date.now()}.png`;
 }
 
 function isColorDark(hex) {
@@ -444,7 +515,7 @@ function isColorDark(hex) {
 }
 
 function saveToGallery() {
-    const dataUrl = resultCanvas.toDataURL('image/png');
+    const dataUrl = exportCanvasDataUrl(resultCanvas);
     savedGallery.push({
         id: Date.now(),
         img: dataUrl
@@ -480,7 +551,7 @@ window.viewInGallery = function(id) {
     currentViewId = id;
     galleryViewImg.src = item.img;
     btnGalleryDownload.href = item.img;
-    btnGalleryDownload.download = `StudioBooth_${id}.png`;
+    btnGalleryDownload.download = `PhotoBoothAjah_${id}.png`;
     galleryViewModal.classList.remove('hidden');
 };
 

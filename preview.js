@@ -69,9 +69,13 @@ function renderPreview() {
     });
 }
 
+function clearActive(selector) {
+    document.querySelectorAll(selector).forEach(item => item.classList.remove('active'));
+}
+
 document.querySelectorAll('.swatch[data-bg]').forEach(button => {
     button.addEventListener('click', event => {
-        document.querySelectorAll('.swatch').forEach(item => item.classList.remove('active'));
+        clearActive('.swatch');
         event.currentTarget.classList.add('active');
         state.frameBg = {
             type: event.currentTarget.dataset.bg,

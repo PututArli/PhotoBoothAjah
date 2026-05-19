@@ -153,11 +153,21 @@ body {
 .preview-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .preview-label { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 .preview-hint { margin-top: 4px; font-size: 12px; line-height: 1.45; color: rgba(255,255,255,0.66); }
-#session-preview { width: 100%; height: clamp(120px, 16vh, 170px); display: block; border-radius: 12px; box-shadow: 0 10px 24px rgba(0,0,0,0.45); background: #000; object-fit: contain; object-position: center; }
+#session-preview { width: 100%; height: clamp(112px, 15vh, 160px); display: block; border-radius: 12px; box-shadow: 0 10px 24px rgba(0,0,0,0.45); background: #000; object-fit: contain; object-position: center; }
 .capture-btn { width: 100%; padding: 18px; border: none; border-radius: var(--r-sm); background: var(--accent); color: #fff; font-size: 16px; font-weight: 800; letter-spacing: 1px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(121,40,202,0.4); display: flex; align-items: center; justify-content: center; gap: 8px; }
 .capture-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255,0,127,0.5); background: var(--accent-hover); }
 .capture-btn:active { transform: scale(0.97); }
 .capture-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(1); }
+
+.special-border-btn { min-height: 46px; }
+.special-border-btn { color: #fff; border-color: rgba(255,255,255,0.14); box-shadow: 0 10px 20px rgba(0,0,0,0.14); }
+.special-border-btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+.special-border-btn[data-border="christmas"] { background: linear-gradient(135deg, #103824 0%, #8f1d22 100%); }
+.special-border-btn[data-border="halloween"] { background: linear-gradient(135deg, #20102f 0%, #c2550a 100%); }
+.special-border-btn[data-border="newyear"] { background: linear-gradient(135deg, #0c2148 0%, #0aa7b8 100%); }
+.special-border-btn[data-border="birthday"] { background: linear-gradient(135deg, #8f3a5c 0%, #f0b7c8 100%); }
+.special-border-btn[data-border="romantic"] { background: linear-gradient(135deg, #6d1f3b 0%, #d86f8f 100%); }
+.special-border-btn[data-border="summer"] { background: linear-gradient(135deg, #0f6f73 0%, #d8c07a 100%); }
 
 @media (max-width: 768px) {
     .app {
@@ -203,10 +213,7 @@ body {
         gap: 6px;
     }
     #session-preview {
-        height: clamp(96px, 14dvh, 120px);
-    }
-    .preview-hint {
-        font-size: 11px;
+        height: clamp(90px, 12dvh, 118px);
     }
     .capture-btn { padding: 16px; font-size: 15px; }
 }

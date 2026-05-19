@@ -6,6 +6,63 @@ window.StudioBoothComposition = (() => {
         single:  { count: 1, cols: 1, rows: 1 },
     };
 
+    const borderPresets = {
+        christmas: {
+            frame: '#c71f37',
+            accent: '#ffd166',
+            accentSoft: 'rgba(255, 209, 102, 0.22)',
+            symbol: '❄️',
+            symbol2: '🎄',
+            symbol3: '🎁',
+            symbol4: '✨',
+        },
+        halloween: {
+            frame: '#ff7b00',
+            accent: '#f7b801',
+            accentSoft: 'rgba(247, 184, 1, 0.2)',
+            symbol: '🎃',
+            symbol2: '🕸️',
+            symbol3: '🦇',
+            symbol4: '👻',
+        },
+        newyear: {
+            frame: '#00b4d8',
+            accent: '#f8f9fa',
+            accentSoft: 'rgba(255,255,255,0.18)',
+            symbol: '✨',
+            symbol2: '🎆',
+            symbol3: '🎊',
+            symbol4: '🎉',
+        },
+        birthday: {
+            frame: '#ff6fa8',
+            accent: '#ffffff',
+            accentSoft: 'rgba(255,255,255,0.2)',
+            symbol: '🎂',
+            symbol2: '🎈',
+            symbol3: '🎉',
+            symbol4: '🧁',
+        },
+        romantic: {
+            frame: '#ff5d8f',
+            accent: '#ffffff',
+            accentSoft: 'rgba(255,255,255,0.18)',
+            symbol: '💖',
+            symbol2: '🌹',
+            symbol3: '💌',
+            symbol4: '💕',
+        },
+        summer: {
+            frame: '#00c2ff',
+            accent: '#ffffff',
+            accentSoft: 'rgba(255,255,255,0.16)',
+            symbol: '☀️',
+            symbol2: '🌴',
+            symbol3: '🏖️',
+            symbol4: '🍍',
+        },
+    };
+
     function isColorDark(hex) {
         if (!hex) return false;
         const c = String(hex).replace('#', '');
@@ -141,6 +198,123 @@ window.StudioBoothComposition = (() => {
         }
     }
 
+    function drawSpecialBorderDecorations(ctx, photoBorder, cellX, cellY, cellW, cellH, scale = 1) {
+        const theme = borderPresets[photoBorder];
+        if (!theme) return;
+
+        const emojiSize = Math.max(26 * scale, Math.min(cellW, cellH) * 0.05);
+        const lineWidth = Math.max(5 * scale, 7 * scale);
+        const inset = Math.max(10 * scale, 14 * scale);
+        const outerInset = Math.max(4 * scale, 6 * scale);
+
+        const drawCorner = (x, y, flipX, flipY, symbol, sizeScale = 1) => {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(flipX, flipY);
+            ctx.font = `800 ${emojiSize * sizeScale}px "Plus Jakarta Sans", sans-serif`;
+            ctx.fillText(symbol, 0, 0);
+            ctx.restore();
+        };
+
+        const drawConfettiDots = (startX, startY, endX, endY, count, color) => {
+            ctx.save();
+            ctx.fillStyle = color;
+            for (let i = 0; i < count; i++) {
+                const ratio = count === 1 ? 0 : i / (count - 1);
+                const x = startX + (endX - startX) * ratio;
+                const y = startY + (endY - startY) * ratio;
+                ctx.beginPath();
+                ctx.arc(x, y, Math.max(2 * scale, 3 * scale), 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        };
+
+        const drawSparkLine = (startX, startY, endX, endY, color) => {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = Math.max(2 * scale, 3 * scale);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            ctx.restore();
+        };
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.25)';
+        ctx.shadowBlur = 24 * scale;
+        ctx.strokeStyle = theme.frame;
+        ctx.lineWidth = lineWidth;
+        ctx.strokeRect(cellX + outerInset, cellY + outerInset, cellW - outerInset * 2, cellH - outerInset * 2);
+        ctx.lineWidth = Math.max(2 * scale, 3 * scale);
+        ctx.globalAlpha = 0.9;
+        ctx.strokeRect(cellX + inset, cellY + inset, cellW - inset * 2, cellH - inset * 2);
+
+        ctx.shadowColor = 'transparent';
+        ctx.fillStyle = theme.accentSoft;
+        ctx.fillRect(cellX + inset, cellY + inset, cellW - inset * 2, 18 * scale);
+        ctx.fillRect(cellX + inset, cellY + cellH - inset - 18 * scale, cellW - inset * 2, 18 * scale);
+
+        if (photoBorder === 'christmas') {
+            drawConfettiDots(cellX + inset + 18 * scale, cellY + inset + 9 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 9 * scale, 10, '#ffd166');
+            drawConfettiDots(cellX + inset + 18 * scale, cellY + cellH - inset - 9 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 9 * scale, 10, '#ffffff');
+            drawSparkLine(cellX + inset + 14 * scale, cellY + inset + 14 * scale, cellX + inset + 46 * scale, cellY + inset + 46 * scale, '#ffd166');
+            drawSparkLine(cellX + cellW - inset - 14 * scale, cellY + inset + 14 * scale, cellX + cellW - inset - 46 * scale, cellY + inset + 46 * scale, '#ffd166');
+            drawCorner(cellX + outerInset + 26 * scale, cellY + outerInset + 28 * scale, 1, 1, '🎄', 0.7);
+            drawCorner(cellX + cellW - outerInset - 26 * scale, cellY + outerInset + 28 * scale, 1, 1, '🎁', 0.7);
+            drawCorner(cellX + outerInset + 26 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '✨', 0.7);
+            drawCorner(cellX + cellW - outerInset - 26 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '❄️', 0.7);
+        } else if (photoBorder === 'halloween') {
+            drawSparkLine(cellX + inset + 16 * scale, cellY + inset + 22 * scale, cellX + cellW - inset - 16 * scale, cellY + inset + 22 * scale, '#f7b801');
+            drawSparkLine(cellX + inset + 16 * scale, cellY + cellH - inset - 22 * scale, cellX + cellW - inset - 16 * scale, cellY + cellH - inset - 22 * scale, '#f7b801');
+            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 28 * scale, 1, 1, '🕸️', 0.7);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 28 * scale, 1, 1, '👻', 0.7);
+            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎃', 0.75);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🦇', 0.7);
+        } else if (photoBorder === 'newyear') {
+            drawConfettiDots(cellX + inset + 18 * scale, cellY + inset + 10 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 10 * scale, 12, '#ffffff');
+            drawConfettiDots(cellX + inset + 18 * scale, cellY + cellH - inset - 10 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 10 * scale, 12, '#ffd60a');
+            drawSparkLine(cellX + cellW * 0.5, cellY + inset + 10 * scale, cellX + cellW * 0.5, cellY + inset + 54 * scale, '#ffffff');
+            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🎆', 0.75);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '✨', 0.8);
+            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎊', 0.75);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎉', 0.75);
+        } else if (photoBorder === 'birthday') {
+            drawConfettiDots(cellX + inset + 16 * scale, cellY + inset + 10 * scale, cellX + cellW - inset - 16 * scale, cellY + inset + 10 * scale, 14, '#ffffff');
+            drawConfettiDots(cellX + inset + 16 * scale, cellY + cellH - inset - 10 * scale, cellX + cellW - inset - 16 * scale, cellY + cellH - inset - 10 * scale, 14, '#ffd166');
+            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🎈', 0.75);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🎂', 0.72);
+            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎉', 0.75);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🧁', 0.72);
+        } else if (photoBorder === 'romantic') {
+            drawSparkLine(cellX + inset + 18 * scale, cellY + inset + 16 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 16 * scale, '#ffffff');
+            drawSparkLine(cellX + inset + 18 * scale, cellY + cellH - inset - 16 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 16 * scale, '#ffffff');
+            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '💖', 0.8);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🌹', 0.78);
+            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '💕', 0.8);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '💌', 0.78);
+        } else if (photoBorder === 'summer') {
+            drawConfettiDots(cellX + inset + 18 * scale, cellY + inset + 12 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 12 * scale, 12, '#ffffff');
+            drawSparkLine(cellX + inset + 18 * scale, cellY + cellH - inset - 18 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 18 * scale, '#ffffff');
+            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '☀️', 0.8);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🌴', 0.78);
+            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🏖️', 0.8);
+            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🍍', 0.78);
+        }
+
+        ctx.font = `700 ${emojiSize}px "Plus Jakarta Sans", sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = theme.accent;
+        ctx.fillText(theme.symbol, cellX + inset + 20 * scale, cellY + inset + 18 * scale);
+        ctx.fillText(theme.symbol2, cellX + cellW - inset - 20 * scale, cellY + inset + 18 * scale);
+        ctx.fillText(theme.symbol3, cellX + inset + 20 * scale, cellY + cellH - inset - 18 * scale);
+        ctx.fillText(theme.symbol4, cellX + cellW - inset - 20 * scale, cellY + cellH - inset - 18 * scale);
+
+        ctx.restore();
+    }
+
     function renderComposition(targetCanvas, options) {
         const {
             layoutKey = 'strip3',
@@ -242,6 +416,8 @@ window.StudioBoothComposition = (() => {
                 ctx.strokeRect(imgX - 15 * scale, imgY - 15 * scale, metrics.pW + 30 * scale, metrics.pH + 30 * scale);
                 ctx.lineWidth = 2 * scale;
                 ctx.strokeRect(imgX - 22 * scale, imgY - 22 * scale, metrics.pW + 44 * scale, metrics.pH + 44 * scale);
+            } else if (borderPresets[photoBorder]) {
+                drawSpecialBorderDecorations(ctx, photoBorder, cellX, cellY, metrics.cellW, metrics.cellH, scale);
             } else if (photoBorder !== 'film') {
                 ctx.strokeStyle = 'rgba(0,0,0,0.05)';
                 ctx.lineWidth = 2 * scale;
@@ -258,7 +434,7 @@ window.StudioBoothComposition = (() => {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        const mainLabel = String(text || 'STUDIOBOOTH').trim().toUpperCase();
+        const mainLabel = String(text || 'PHOTOBOOTHAJAH').trim().toUpperCase();
         ctx.fillStyle = dark ? '#fff' : '#111';
         ctx.font = `800 ${44 * scale}px "Plus Jakarta Sans", sans-serif`;
         ctx.fillText(mainLabel, targetCanvas.width / 2, textY - 15 * scale);

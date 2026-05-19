@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>StudioBooth — Photo Booth</title>
+<title>PhotoBoothAjah</title>
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
     <aside class="sidebar">
         <div class="sidebar-head">
             <img src="logo.png" alt="Logo" class="app-logo">
-            <h1>StudioBooth</h1>
+            <h1>PhotoBoothAjah</h1>
         </div>
 
         <div class="tabs">
@@ -122,6 +122,12 @@
                     <button class="opt-btn" data-border="tape">Washi Tape</button>
                     <button class="opt-btn" data-border="neon">Neon Glow</button>
                     <button class="opt-btn" data-border="elegant">Elegant</button>
+                    <button class="opt-btn special-border-btn" data-border="christmas">Natal</button>
+                    <button class="opt-btn special-border-btn" data-border="halloween">Halloween</button>
+                    <button class="opt-btn special-border-btn" data-border="newyear">Tahun Baru</button>
+                    <button class="opt-btn special-border-btn" data-border="birthday">Ulang Tahun</button>
+                    <button class="opt-btn special-border-btn" data-border="romantic">Romantis</button>
+                    <button class="opt-btn special-border-btn" data-border="summer">Summer</button>
                 </div>
 
                 <label class="section-label" style="margin-top:20px">Teks di Frame</label>
@@ -138,8 +144,8 @@
             <div class="preview-panel">
                 <div class="preview-panel-head">
                     <div>
-                        <span class="preview-label">Preview Hasil Akhir</span>
-                        <p class="preview-hint">Tampilan ini mengikuti layout, frame, warna, dan teks yang kamu pilih.</p>
+                        <span class="preview-label">Preview Live</span>
+                        <p class="preview-hint">Menampilkan layout, frame, dan warna yang sedang kamu pilih.</p>
                     </div>
                 </div>
                 <canvas id="session-preview"></canvas>
