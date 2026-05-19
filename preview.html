@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Frame - StudioBooth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            overflow-y: auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .controls-card {
+            background: rgba(20, 20, 25, 0.7);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: var(--r);
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--accent);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .header-title p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .preview-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            transition: 0.3s;
+        }
+        .row {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        .col { flex: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">
+        <h1>StudioBooth Frame Previewer</h1>
+        <p>Gunakan halaman ini untuk melihat simulasi hasil akhir bingkai foto</p>
+    </div>
+
+    <div class="controls-card">
+        <div class="row">
+            <div class="col">
+                <label class="section-label">Tema Latar Belakang</label>
+                <div class="swatch-row" style="margin-top: 10px;">
+                    <button class="swatch active" data-bg="solid" data-val="#ffffff" style="background:#fff" title="Putih Bersih"></button>
+                    <button class="swatch" data-bg="solid" data-val="#0a0a0a" style="background:#0a0a0a" title="Hitam Elegan"></button>
+                    <button class="swatch" data-bg="gradient" data-val="#ff9a9e,#fecfef" style="background:linear-gradient(135deg, #ff9a9e, #fecfef)"></button>
+                    <button class="swatch" data-bg="gradient" data-val="#a18cd1,#fbc2eb" style="background:linear-gradient(135deg, #a18cd1, #fbc2eb)"></button>
+                    <button class="swatch" data-bg="gradient" data-val="#84fab0,#8fd3f4" style="background:linear-gradient(135deg, #84fab0, #8fd3f4)"></button>
+                    <button class="swatch" data-bg="gradient" data-val="#fccb90,#d57eeb" style="background:linear-gradient(135deg, #fccb90, #d57eeb)"></button>
+                    <button class="swatch" data-bg="gradient" data-val="#e0c3fc,#8ec5fc" style="background:linear-gradient(135deg, #e0c3fc, #8ec5fc)"></button>
+                </div>
+            </div>
+            
+            <div class="col">
+                <label class="section-label">Gaya Bingkai Foto</label>
+                <div class="option-grid cols-3" style="margin-top: 10px;">
+                    <button class="opt-btn active" data-border="plain">Polos</button>
+                    <button class="opt-btn" data-border="polaroid">Polaroid</button>
+                    <button class="opt-btn" data-border="film">Film</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label class="section-label">Layout Hasil</label>
+                <div class="option-grid cols-4" style="margin-top: 10px;">
+                    <button class="opt-btn active" data-layout="strip3">Strip 3</button>
+                    <button class="opt-btn" data-layout="strip4">Strip 4</button>
+                    <button class="opt-btn" data-layout="grid2x2">Grid 2x2</button>
+                    <button class="opt-btn" data-layout="single">Single</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-wrap">
+        <canvas id="preview-canvas"></canvas>
+    </div>
+
+    <script src="js/shared/composition.js"></script>
+    <script src="preview.js"></script>
+    <div style="margin-bottom: 100px;"></div>
+</body>
+</html>
