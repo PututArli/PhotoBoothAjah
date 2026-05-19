@@ -54,7 +54,12 @@ function generatePlaceholders() {
     }
 }
 
+let previewCollapsed = false;
+
 function renderPreview() {
+    const isSmall = window.innerWidth < 768;
+    const scale = previewCollapsed ? (isSmall ? 0.35 : 0.6) : 1;
+
     Composition.renderComposition(canvas, {
         layoutKey: state.layout,
         sessionCount: 3,
@@ -65,8 +70,17 @@ function renderPreview() {
         quote: state.quote,
         photos: state.photos,
         previewMode: false,
-        scale: 1,
+        scale: scale,
     });
+
+    // adjust canvas intrinsic sizing to avoid overflow on mobile browsers
+    if (isSmall) {
+        canvas.style.maxHeight = previewCollapsed ? '120px' : 'calc(45dvh)';
+        canvas.style.width = 'auto';
+    } else {
+        canvas.style.maxHeight = '';
+        canvas.style.width = '';
+    }
 }
 
 function clearActive(selector) {
@@ -105,5 +119,36 @@ document.querySelectorAll('[data-layout]').forEach(button => {
 
 window.addEventListener('load', () => {
     generatePlaceholders();
+    renderPreview();
+});
+
+// Toggle preview collapse on small screens with animation
+const toggleBtn = document.getElementById('preview-toggle');
+if (toggleBtn) {
+    const wrap = document.querySelector('.preview-wrap');
+    toggleBtn.addEventListener('click', () => {
+        if (!wrap) return;
+        // add animating state to hint browser to optimize
+        wrap.classList.add('animating');
+        // toggle collapsed state
+        previewCollapsed = !previewCollapsed;
+        wrap.classList.toggle('collapsed', previewCollapsed);
+        toggleBtn.classList.toggle('active', previewCollapsed);
+        renderPreview();
+
+        // remove animating class after first transition ends on the canvas
+        const onEnd = (ev) => {
+            // only respond to a relevant property to avoid multiple fires
+            if (ev.propertyName && (ev.propertyName.includes('max-height') || ev.propertyName.includes('opacity') || ev.propertyName.includes('transform'))) {
+                wrap.classList.remove('animating');
+                canvas.removeEventListener('transitionend', onEnd);
+            }
+        };
+        canvas.addEventListener('transitionend', onEnd);
+    });
+}
+
+window.addEventListener('resize', () => {
+    // ensure canvas resizes sensibly when orientation changes
     renderPreview();
 });

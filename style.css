@@ -253,3 +253,37 @@ body {
 .gallery-item { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--glass-border); transition: 0.3s; cursor: pointer; }
 .gallery-item:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-color: var(--txt); }
 .gallery-item img { width: 100%; display: block; }
+
+/* Preview responsiveness adjustments to avoid covering UI on mobile (esp. Android) */
+.preview-wrap { position: relative; width: 100%; display: flex; justify-content: center; }
+.preview-toggle {
+    position: absolute; top: 8px; right: 8px; z-index: 30;
+    background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--glass-border);
+    width: 40px; height: 36px; border-radius: 999px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; backdrop-filter: blur(8px);
+    transition: transform 260ms cubic-bezier(0.22,1,0.36,1), background 180ms ease, opacity 180ms ease;
+}
+.preview-toggle.active { transform: rotate(180deg) scale(0.98); opacity: 0.95; }
+
+.preview-wrap canvas { max-width: 100%; height: auto; transition: max-height 340ms cubic-bezier(0.22,1,0.36,1), opacity 220ms ease, transform 300ms cubic-bezier(0.22,1,0.36,1), box-shadow 200ms ease; }
+.preview-wrap.collapsed canvas {
+    max-height: 120px; box-shadow: none; border-radius: 8px; transform: scale(0.995) translateY(0);
+    opacity: 0.95;
+}
+
+.preview-wrap.animating canvas { will-change: max-height, transform, opacity; }
+
+@media (max-width: 768px) {
+    .preview-wrap { padding: 8px; }
+    .preview-wrap canvas { max-height: calc(45dvh); box-shadow: 0 14px 30px rgba(0,0,0,0.6); }
+    .preview-wrap.collapsed { align-items: center; }
+    .preview-wrap.collapsed canvas { max-height: 90px; }
+    .preview-toggle { top: 10px; right: 10px; width: 36px; height: 32px; font-size: 14px; }
+}
+
+/* Fallback for browsers where 100dvh/45dvh behave inconsistently on Android */
+@supports not (height: 100dvh) {
+    @media (max-width: 768px) {
+        .preview-wrap canvas { max-height: 50vh; }
+    }
+}
