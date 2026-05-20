@@ -63,6 +63,39 @@ window.StudioBoothComposition = (() => {
         },
     };
 
+    const themeOrnaments = {
+        christmas: [
+            { symbol: '❄️', slot: 'top', size: 0.95, alpha: 0.55, rotate: 0 },
+            { symbol: '🎁', slot: 'left', size: 0.68, alpha: 0.42, rotate: -0.08 },
+            { symbol: '✨', slot: 'right', size: 0.7, alpha: 0.42, rotate: 0.08 },
+        ],
+        halloween: [
+            { symbol: '🎃', slot: 'top', size: 0.95, alpha: 0.55, rotate: 0 },
+            { symbol: '🕸️', slot: 'left', size: 0.7, alpha: 0.4, rotate: -0.08 },
+            { symbol: '🦇', slot: 'right', size: 0.72, alpha: 0.4, rotate: 0.08 },
+        ],
+        newyear: [
+            { symbol: '🎆', slot: 'top', size: 0.95, alpha: 0.56, rotate: 0 },
+            { symbol: '🎊', slot: 'left', size: 0.7, alpha: 0.4, rotate: -0.08 },
+            { symbol: '🎉', slot: 'right', size: 0.74, alpha: 0.4, rotate: 0.08 },
+        ],
+        birthday: [
+            { symbol: '🎈', slot: 'top', size: 0.95, alpha: 0.56, rotate: 0 },
+            { symbol: '🎂', slot: 'left', size: 0.72, alpha: 0.4, rotate: -0.08 },
+            { symbol: '🧁', slot: 'right', size: 0.72, alpha: 0.4, rotate: 0.08 },
+        ],
+        romantic: [
+            { symbol: '💖', slot: 'top', size: 1.0, alpha: 0.62, rotate: 0 },
+            { symbol: '💌', slot: 'left', size: 0.72, alpha: 0.42, rotate: -0.08 },
+            { symbol: '🌹', slot: 'right', size: 0.74, alpha: 0.42, rotate: 0.08 },
+        ],
+        summer: [
+            { symbol: '☀️', slot: 'top', size: 0.95, alpha: 0.56, rotate: 0 },
+            { symbol: '🌴', slot: 'left', size: 0.72, alpha: 0.4, rotate: -0.08 },
+            { symbol: '🍍', slot: 'right', size: 0.72, alpha: 0.4, rotate: 0.08 },
+        ],
+    };
+
     function isColorDark(hex) {
         if (!hex) return false;
         const c = String(hex).replace('#', '');
@@ -198,14 +231,35 @@ window.StudioBoothComposition = (() => {
         }
     }
 
-    function drawSpecialBorderDecorations(ctx, photoBorder, cellX, cellY, cellW, cellH, scale = 1) {
+    function drawSpecialBorderDecorations(ctx, photoBorder, cellX, cellY, cellW, cellH, polTop, polBottom, polSide, scale = 1) {
         const theme = borderPresets[photoBorder];
         if (!theme) return;
+        const ornaments = themeOrnaments[photoBorder] || [];
 
         const emojiSize = Math.max(26 * scale, Math.min(cellW, cellH) * 0.05);
         const lineWidth = Math.max(5 * scale, 7 * scale);
         const inset = Math.max(10 * scale, 14 * scale);
         const outerInset = Math.max(4 * scale, 6 * scale);
+        const drawSticker = (symbol, x, y, size, alpha = 0.45, rotation = 0) => {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.shadowColor = 'rgba(0,0,0,0.18)';
+            ctx.shadowBlur = 14 * scale;
+            ctx.font = `800 ${size}px "Plus Jakarta Sans", sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = theme.accent;
+            ctx.fillText(symbol, 0, 0);
+            ctx.restore();
+        };
+        const topY = cellY + Math.max(18 * scale, polTop * 0.45);
+        const bottomY = cellY + cellH - Math.max(18 * scale, polBottom * 0.45);
+        const leftX = cellX + Math.max(18 * scale, polSide * 0.45);
+        const rightX = cellX + cellW - Math.max(18 * scale, polSide * 0.45);
+        const centerX = cellX + cellW / 2;
+        const centerY = cellY + cellH / 2;
 
         const drawCorner = (x, y, flipX, flipY, symbol, sizeScale = 1) => {
             ctx.save();
@@ -302,6 +356,13 @@ window.StudioBoothComposition = (() => {
             drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🏖️', 0.8);
             drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🍍', 0.78);
         }
+
+        ornaments.forEach((ornament, index) => {
+            const x = ornament.slot === 'left' ? leftX : ornament.slot === 'right' ? rightX : centerX;
+            const y = ornament.slot === 'top' ? topY : ornament.slot === 'bottom' ? bottomY : centerY;
+            const size = emojiSize * ornament.size;
+            drawSticker(ornament.symbol, x, y, size, ornament.alpha, ornament.rotate + (index % 2 === 0 ? -0.04 : 0.04));
+        });
 
         ctx.font = `700 ${emojiSize}px "Plus Jakarta Sans", sans-serif`;
         ctx.textAlign = 'center';
@@ -417,7 +478,7 @@ window.StudioBoothComposition = (() => {
                 ctx.lineWidth = 2 * scale;
                 ctx.strokeRect(imgX - 22 * scale, imgY - 22 * scale, metrics.pW + 44 * scale, metrics.pH + 44 * scale);
             } else if (borderPresets[photoBorder]) {
-                drawSpecialBorderDecorations(ctx, photoBorder, cellX, cellY, metrics.cellW, metrics.cellH, scale);
+                drawSpecialBorderDecorations(ctx, photoBorder, cellX, cellY, metrics.cellW, metrics.cellH, metrics.polTop, metrics.polBottom, metrics.polSide, scale);
             } else if (photoBorder !== 'film') {
                 ctx.strokeStyle = 'rgba(0,0,0,0.05)';
                 ctx.lineWidth = 2 * scale;

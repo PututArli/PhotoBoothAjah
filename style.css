@@ -273,6 +273,11 @@ body {
 
 .preview-wrap.animating canvas { will-change: max-height, transform, opacity; }
 
+html.android .preview-panel,
+html.android .preview-wrap {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
     .preview-wrap { padding: 8px; }
     .preview-wrap canvas { max-height: calc(45dvh); box-shadow: 0 14px 30px rgba(0,0,0,0.6); }
