@@ -387,6 +387,9 @@ function buildUI() {
 
 function renderPreview() {
     if (!previewCanvas) return;
+    if (document.documentElement.classList.contains('android') || window.getComputedStyle(previewCanvas).display === 'none') {
+        return;
+    }
     const scale = isMobileDevice ? 0.1 : 0.16;
     Composition.renderComposition(previewCanvas, {
         layoutKey: S.layout,

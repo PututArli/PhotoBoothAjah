@@ -61,38 +61,108 @@ window.StudioBoothComposition = (() => {
             symbol3: '🏖️',
             symbol4: '🍍',
         },
+        sakura: {
+            frame: '#ffb7b2',
+            accent: '#ffffff',
+            accentSoft: 'rgba(255, 183, 178, 0.2)',
+            symbol: '🌸',
+            symbol2: '🍡',
+            symbol3: '🌸',
+            symbol4: '✨',
+        },
+        galaxy: {
+            frame: '#8a2be2',
+            accent: '#00ffff',
+            accentSoft: 'rgba(138, 43, 226, 0.2)',
+            symbol: '🌌',
+            symbol2: '⭐',
+            symbol3: '🚀',
+            symbol4: '🪐',
+        },
+        retro: {
+            frame: '#ff00ff',
+            accent: '#00ffff',
+            accentSoft: 'rgba(255, 0, 255, 0.2)',
+            symbol: '📼',
+            symbol2: '🕹️',
+            symbol3: '👾',
+            symbol4: '🛼',
+        },
+        nature: {
+            frame: '#2d6a4f',
+            accent: '#d8f3dc',
+            accentSoft: 'rgba(45, 106, 79, 0.2)',
+            symbol: '🌿',
+            symbol2: '🍄',
+            symbol3: '🐸',
+            symbol4: '🦋',
+        },
+        magic: {
+            frame: '#3a0ca3',
+            accent: '#f72585',
+            accentSoft: 'rgba(58, 12, 163, 0.2)',
+            symbol: '🔮',
+            symbol2: '🌙',
+            symbol3: '🪄',
+            symbol4: '✨',
+        },
     };
 
     const themeOrnaments = {
         christmas: [
-            { symbol: '❄️', slot: 'top', size: 0.95, alpha: 0.55, rotate: 0 },
-            { symbol: '🎁', slot: 'left', size: 0.68, alpha: 0.42, rotate: -0.08 },
-            { symbol: '✨', slot: 'right', size: 0.7, alpha: 0.42, rotate: 0.08 },
+            { symbol: '❄️', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🎁', slot: 'left', size: 0.68, alpha: 1.0, rotate: -0.08 },
+            { symbol: '✨', slot: 'right', size: 0.7, alpha: 1.0, rotate: 0.08 },
         ],
         halloween: [
-            { symbol: '🎃', slot: 'top', size: 0.95, alpha: 0.55, rotate: 0 },
-            { symbol: '🕸️', slot: 'left', size: 0.7, alpha: 0.4, rotate: -0.08 },
-            { symbol: '🦇', slot: 'right', size: 0.72, alpha: 0.4, rotate: 0.08 },
+            { symbol: '🎃', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🕸️', slot: 'left', size: 0.7, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🦇', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
         ],
         newyear: [
-            { symbol: '🎆', slot: 'top', size: 0.95, alpha: 0.56, rotate: 0 },
-            { symbol: '🎊', slot: 'left', size: 0.7, alpha: 0.4, rotate: -0.08 },
-            { symbol: '🎉', slot: 'right', size: 0.74, alpha: 0.4, rotate: 0.08 },
+            { symbol: '🎆', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🎊', slot: 'left', size: 0.7, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🎉', slot: 'right', size: 0.74, alpha: 1.0, rotate: 0.08 },
         ],
         birthday: [
-            { symbol: '🎈', slot: 'top', size: 0.95, alpha: 0.56, rotate: 0 },
-            { symbol: '🎂', slot: 'left', size: 0.72, alpha: 0.4, rotate: -0.08 },
-            { symbol: '🧁', slot: 'right', size: 0.72, alpha: 0.4, rotate: 0.08 },
+            { symbol: '🎈', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🎂', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🧁', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
         ],
         romantic: [
-            { symbol: '💖', slot: 'top', size: 1.0, alpha: 0.62, rotate: 0 },
-            { symbol: '💌', slot: 'left', size: 0.72, alpha: 0.42, rotate: -0.08 },
-            { symbol: '🌹', slot: 'right', size: 0.74, alpha: 0.42, rotate: 0.08 },
+            { symbol: '💖', slot: 'top', size: 1.0, alpha: 1.0, rotate: 0 },
+            { symbol: '💌', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🌹', slot: 'right', size: 0.74, alpha: 1.0, rotate: 0.08 },
         ],
         summer: [
-            { symbol: '☀️', slot: 'top', size: 0.95, alpha: 0.56, rotate: 0 },
-            { symbol: '🌴', slot: 'left', size: 0.72, alpha: 0.4, rotate: -0.08 },
-            { symbol: '🍍', slot: 'right', size: 0.72, alpha: 0.4, rotate: 0.08 },
+            { symbol: '☀️', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🌴', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🍍', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
+        ],
+        sakura: [
+            { symbol: '🌸', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🎐', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🍡', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
+        ],
+        galaxy: [
+            { symbol: '🌌', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🪐', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🚀', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
+        ],
+        retro: [
+            { symbol: '👾', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🕹️', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🛼', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
+        ],
+        nature: [
+            { symbol: '🌿', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🍄', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🦋', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
+        ],
+        magic: [
+            { symbol: '🌙', slot: 'top', size: 0.95, alpha: 1.0, rotate: 0 },
+            { symbol: '🔮', slot: 'left', size: 0.72, alpha: 1.0, rotate: -0.08 },
+            { symbol: '🪄', slot: 'right', size: 0.72, alpha: 1.0, rotate: 0.08 },
         ],
     };
 
@@ -153,6 +223,11 @@ window.StudioBoothComposition = (() => {
             polTop = 50 * scale;
             polBottom = 50 * scale;
             polSide = 50 * scale;
+            pad = 60 * scale;
+        } else if (['christmas', 'halloween', 'newyear', 'birthday', 'romantic', 'summer', 'sakura', 'galaxy', 'retro', 'nature', 'magic'].includes(photoBorder)) {
+            polTop = 80 * scale;
+            polBottom = 80 * scale;
+            polSide = 80 * scale;
             pad = 60 * scale;
         }
 
@@ -217,15 +292,35 @@ window.StudioBoothComposition = (() => {
             return;
         }
 
-        if (frameBg.type === 'pattern' && frameBg.val === 'polka') {
+        if (frameBg.type === 'pattern') {
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, w, h);
-            ctx.fillStyle = '#ff007f';
-            for (let py = 0; py < h; py += 40) {
-                for (let px = 0; px < w; px += 40) {
-                    ctx.beginPath();
-                    ctx.arc(px, py, 6, 0, Math.PI * 2);
-                    ctx.fill();
+            
+            if (frameBg.val === 'polka') {
+                ctx.fillStyle = '#ff007f';
+                for (let py = 0; py < h; py += 40) {
+                    for (let px = 0; px < w; px += 40) {
+                        ctx.beginPath();
+                        ctx.arc(px, py, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            } else if (frameBg.val === 'grid') {
+                ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let x = 0; x < w; x += 20) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+                for (let y = 0; y < h; y += 20) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+                ctx.stroke();
+            } else if (frameBg.val === 'check') {
+                ctx.fillStyle = '#f1f1f1';
+                const size = 20;
+                for (let y = 0; y < h; y += size) {
+                    for (let x = 0; x < w; x += size) {
+                        if ((x / size + y / size) % 2 === 0) {
+                            ctx.fillRect(x, y, size, size);
+                        }
+                    }
                 }
             }
         }
@@ -236,7 +331,7 @@ window.StudioBoothComposition = (() => {
         if (!theme) return;
         const ornaments = themeOrnaments[photoBorder] || [];
 
-        const emojiSize = Math.max(26 * scale, Math.min(cellW, cellH) * 0.05);
+        const emojiSize = Math.max(45 * scale, Math.min(polTop, polSide) * 1.15);
         const lineWidth = Math.max(5 * scale, 7 * scale);
         const inset = Math.max(10 * scale, 14 * scale);
         const outerInset = Math.max(4 * scale, 6 * scale);
@@ -254,10 +349,10 @@ window.StudioBoothComposition = (() => {
             ctx.fillText(symbol, 0, 0);
             ctx.restore();
         };
-        const topY = cellY + Math.max(18 * scale, polTop * 0.45);
-        const bottomY = cellY + cellH - Math.max(18 * scale, polBottom * 0.45);
-        const leftX = cellX + Math.max(18 * scale, polSide * 0.45);
-        const rightX = cellX + cellW - Math.max(18 * scale, polSide * 0.45);
+        const topY = cellY + polTop * 0.5;
+        const bottomY = cellY + cellH - polBottom * 0.5;
+        const leftX = cellX + polSide * 0.5;
+        const rightX = cellX + cellW - polSide * 0.5;
         const centerX = cellX + cellW / 2;
         const centerY = cellY + cellH / 2;
 
@@ -265,6 +360,8 @@ window.StudioBoothComposition = (() => {
             ctx.save();
             ctx.translate(x, y);
             ctx.scale(flipX, flipY);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             ctx.font = `800 ${emojiSize * sizeScale}px "Plus Jakarta Sans", sans-serif`;
             ctx.fillText(symbol, 0, 0);
             ctx.restore();
@@ -278,7 +375,7 @@ window.StudioBoothComposition = (() => {
                 const x = startX + (endX - startX) * ratio;
                 const y = startY + (endY - startY) * ratio;
                 ctx.beginPath();
-                ctx.arc(x, y, Math.max(2 * scale, 3 * scale), 0, Math.PI * 2);
+                ctx.arc(x, y, Math.max(4 * scale, 6 * scale), 0, Math.PI * 2);
                 ctx.fill();
             }
             ctx.restore();
@@ -287,7 +384,7 @@ window.StudioBoothComposition = (() => {
         const drawSparkLine = (startX, startY, endX, endY, color) => {
             ctx.save();
             ctx.strokeStyle = color;
-            ctx.lineWidth = Math.max(2 * scale, 3 * scale);
+            ctx.lineWidth = Math.max(4 * scale, 6 * scale);
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
@@ -307,54 +404,99 @@ window.StudioBoothComposition = (() => {
 
         ctx.shadowColor = 'transparent';
         ctx.fillStyle = theme.accentSoft;
-        ctx.fillRect(cellX + inset, cellY + inset, cellW - inset * 2, 18 * scale);
-        ctx.fillRect(cellX + inset, cellY + cellH - inset - 18 * scale, cellW - inset * 2, 18 * scale);
+        const bandSize = Math.max(18 * scale, polTop * 0.6);
+        ctx.fillRect(cellX + inset, cellY + inset, cellW - inset * 2, bandSize);
+        ctx.fillRect(cellX + inset, cellY + cellH - inset - bandSize, cellW - inset * 2, bandSize);
+
+        const cTLX = cellX + polSide * 0.5;
+        const cTLY = cellY + polTop * 0.5;
+        const cTRX = cellX + cellW - polSide * 0.5;
+        const cTRY = cellY + polTop * 0.5;
+        const cBLX = cellX + polSide * 0.5;
+        const cBLY = cellY + cellH - polBottom * 0.5;
+        const cBRX = cellX + cellW - polSide * 0.5;
+        const cBRY = cellY + cellH - polBottom * 0.5;
 
         if (photoBorder === 'christmas') {
-            drawConfettiDots(cellX + inset + 18 * scale, cellY + inset + 9 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 9 * scale, 10, '#ffd166');
-            drawConfettiDots(cellX + inset + 18 * scale, cellY + cellH - inset - 9 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 9 * scale, 10, '#ffffff');
-            drawSparkLine(cellX + inset + 14 * scale, cellY + inset + 14 * scale, cellX + inset + 46 * scale, cellY + inset + 46 * scale, '#ffd166');
-            drawSparkLine(cellX + cellW - inset - 14 * scale, cellY + inset + 14 * scale, cellX + cellW - inset - 46 * scale, cellY + inset + 46 * scale, '#ffd166');
-            drawCorner(cellX + outerInset + 26 * scale, cellY + outerInset + 28 * scale, 1, 1, '🎄', 0.7);
-            drawCorner(cellX + cellW - outerInset - 26 * scale, cellY + outerInset + 28 * scale, 1, 1, '🎁', 0.7);
-            drawCorner(cellX + outerInset + 26 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '✨', 0.7);
-            drawCorner(cellX + cellW - outerInset - 26 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '❄️', 0.7);
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 10, '#ffd166');
+            drawConfettiDots(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, 10, '#ffffff');
+            drawSparkLine(cellX + inset + 14 * scale, cellY + inset + 14 * scale, cTLX + 20 * scale, cTLY + 20 * scale, '#ffd166');
+            drawSparkLine(cellX + cellW - inset - 14 * scale, cellY + inset + 14 * scale, cTRX - 20 * scale, cTRY + 20 * scale, '#ffd166');
+            drawCorner(cTLX, cTLY, 1, 1, '🎄', 0.8);
+            drawCorner(cTRX, cTRY, 1, 1, '🎁', 0.8);
+            drawCorner(cBLX, cBLY, 1, 1, '✨', 0.8);
+            drawCorner(cBRX, cBRY, 1, 1, '❄️', 0.8);
         } else if (photoBorder === 'halloween') {
-            drawSparkLine(cellX + inset + 16 * scale, cellY + inset + 22 * scale, cellX + cellW - inset - 16 * scale, cellY + inset + 22 * scale, '#f7b801');
-            drawSparkLine(cellX + inset + 16 * scale, cellY + cellH - inset - 22 * scale, cellX + cellW - inset - 16 * scale, cellY + cellH - inset - 22 * scale, '#f7b801');
-            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 28 * scale, 1, 1, '🕸️', 0.7);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 28 * scale, 1, 1, '👻', 0.7);
-            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎃', 0.75);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🦇', 0.7);
+            drawSparkLine(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, '#f7b801');
+            drawSparkLine(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, '#f7b801');
+            drawCorner(cTLX, cTLY, 1, 1, '🕸️', 0.8);
+            drawCorner(cTRX, cTRY, 1, 1, '👻', 0.8);
+            drawCorner(cBLX, cBLY, 1, 1, '🎃', 0.85);
+            drawCorner(cBRX, cBRY, 1, 1, '🦇', 0.8);
         } else if (photoBorder === 'newyear') {
-            drawConfettiDots(cellX + inset + 18 * scale, cellY + inset + 10 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 10 * scale, 12, '#ffffff');
-            drawConfettiDots(cellX + inset + 18 * scale, cellY + cellH - inset - 10 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 10 * scale, 12, '#ffd60a');
-            drawSparkLine(cellX + cellW * 0.5, cellY + inset + 10 * scale, cellX + cellW * 0.5, cellY + inset + 54 * scale, '#ffffff');
-            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🎆', 0.75);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '✨', 0.8);
-            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎊', 0.75);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎉', 0.75);
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 12, '#ffffff');
+            drawConfettiDots(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, 12, '#ffd60a');
+            drawSparkLine(cellX + cellW * 0.5, cellY + inset + 10 * scale, cellX + cellW * 0.5, cTLY + 20 * scale, '#ffffff');
+            drawCorner(cTLX, cTLY, 1, 1, '🎆', 0.85);
+            drawCorner(cTRX, cTRY, 1, 1, '✨', 0.9);
+            drawCorner(cBLX, cBLY, 1, 1, '🎊', 0.85);
+            drawCorner(cBRX, cBRY, 1, 1, '🎉', 0.85);
         } else if (photoBorder === 'birthday') {
-            drawConfettiDots(cellX + inset + 16 * scale, cellY + inset + 10 * scale, cellX + cellW - inset - 16 * scale, cellY + inset + 10 * scale, 14, '#ffffff');
-            drawConfettiDots(cellX + inset + 16 * scale, cellY + cellH - inset - 10 * scale, cellX + cellW - inset - 16 * scale, cellY + cellH - inset - 10 * scale, 14, '#ffd166');
-            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🎈', 0.75);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🎂', 0.72);
-            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🎉', 0.75);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🧁', 0.72);
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 14, '#ffffff');
+            drawConfettiDots(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, 14, '#ffd166');
+            drawCorner(cTLX, cTLY, 1, 1, '🎈', 0.85);
+            drawCorner(cTRX, cTRY, 1, 1, '🎂', 0.82);
+            drawCorner(cBLX, cBLY, 1, 1, '🎉', 0.85);
+            drawCorner(cBRX, cBRY, 1, 1, '🧁', 0.82);
         } else if (photoBorder === 'romantic') {
-            drawSparkLine(cellX + inset + 18 * scale, cellY + inset + 16 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 16 * scale, '#ffffff');
-            drawSparkLine(cellX + inset + 18 * scale, cellY + cellH - inset - 16 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 16 * scale, '#ffffff');
-            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '💖', 0.8);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🌹', 0.78);
-            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '💕', 0.8);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '💌', 0.78);
+            drawSparkLine(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, '#ffffff');
+            drawSparkLine(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, '#ffffff');
+            drawCorner(cTLX, cTLY, 1, 1, '💖', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '🌹', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '💕', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '💌', 0.88);
         } else if (photoBorder === 'summer') {
-            drawConfettiDots(cellX + inset + 18 * scale, cellY + inset + 12 * scale, cellX + cellW - inset - 18 * scale, cellY + inset + 12 * scale, 12, '#ffffff');
-            drawSparkLine(cellX + inset + 18 * scale, cellY + cellH - inset - 18 * scale, cellX + cellW - inset - 18 * scale, cellY + cellH - inset - 18 * scale, '#ffffff');
-            drawCorner(cellX + outerInset + 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '☀️', 0.8);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + outerInset + 24 * scale, 1, 1, '🌴', 0.78);
-            drawCorner(cellX + outerInset + 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🏖️', 0.8);
-            drawCorner(cellX + cellW - outerInset - 24 * scale, cellY + cellH - outerInset - 18 * scale, 1, 1, '🍍', 0.78);
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 12, '#ffffff');
+            drawSparkLine(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, '#ffffff');
+            drawCorner(cTLX, cTLY, 1, 1, '☀️', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '🌴', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '🏖️', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '🍍', 0.88);
+        } else if (photoBorder === 'sakura') {
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 12, '#ffffff');
+            drawSparkLine(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, '#ffb7b2');
+            drawCorner(cTLX, cTLY, 1, 1, '🌸', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '🍡', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '💮', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '✨', 0.88);
+        } else if (photoBorder === 'galaxy') {
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 12, '#00ffff');
+            drawConfettiDots(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, 12, '#ffffff');
+            drawCorner(cTLX, cTLY, 1, 1, '🌌', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '⭐', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '🚀', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '🪐', 0.88);
+        } else if (photoBorder === 'retro') {
+            drawSparkLine(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, '#00ffff');
+            drawSparkLine(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, '#ff00ff');
+            drawCorner(cTLX, cTLY, 1, 1, '📼', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '🕹️', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '👾', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '🛼', 0.88);
+        } else if (photoBorder === 'nature') {
+            drawConfettiDots(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, 12, '#d8f3dc');
+            drawConfettiDots(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, 12, '#d8f3dc');
+            drawCorner(cTLX, cTLY, 1, 1, '🌿', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '🍄', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '🐸', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '🦋', 0.88);
+        } else if (photoBorder === 'magic') {
+            drawSparkLine(cellX + inset + bandSize, cTLY, cellX + cellW - inset - bandSize, cTLY, '#f72585');
+            drawConfettiDots(cellX + inset + bandSize, cBLY, cellX + cellW - inset - bandSize, cBLY, 12, '#ffffff');
+            drawCorner(cTLX, cTLY, 1, 1, '🔮', 0.9);
+            drawCorner(cTRX, cTRY, 1, 1, '🌙', 0.88);
+            drawCorner(cBLX, cBLY, 1, 1, '🪄', 0.9);
+            drawCorner(cBRX, cBRY, 1, 1, '✨', 0.88);
         }
 
         ornaments.forEach((ornament, index) => {
@@ -363,15 +505,6 @@ window.StudioBoothComposition = (() => {
             const size = emojiSize * ornament.size;
             drawSticker(ornament.symbol, x, y, size, ornament.alpha, ornament.rotate + (index % 2 === 0 ? -0.04 : 0.04));
         });
-
-        ctx.font = `700 ${emojiSize}px "Plus Jakarta Sans", sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = theme.accent;
-        ctx.fillText(theme.symbol, cellX + inset + 20 * scale, cellY + inset + 18 * scale);
-        ctx.fillText(theme.symbol2, cellX + cellW - inset - 20 * scale, cellY + inset + 18 * scale);
-        ctx.fillText(theme.symbol3, cellX + inset + 20 * scale, cellY + cellH - inset - 18 * scale);
-        ctx.fillText(theme.symbol4, cellX + cellW - inset - 20 * scale, cellY + cellH - inset - 18 * scale);
 
         ctx.restore();
     }
