@@ -231,18 +231,7 @@ body {
         padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
     }
     .preview-panel {
-        padding: 8px;
-        gap: 6px;
-    }
-    .preview-scroll-container {
-        max-height: 120px;
-    }
-    #session-preview {
-        height: 120px;
-    }
-    .preview-scroll-container.is-strip #session-preview {
-        max-width: 180px;
-        height: auto;
+        display: none !important;
     }
     .capture-btn { padding: 16px; font-size: 15px; }
 }
