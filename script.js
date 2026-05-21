@@ -39,6 +39,7 @@ let currentViewId = null;
 const isMobileDevice = window.matchMedia('(max-width: 768px)').matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 let previewPlaceholders = [];
 let activeSession = null;
+let sessionCancelled = false;
 
 const colorFilters = [
     { id:'none', label:'Normal', css:'none' },
@@ -239,6 +240,7 @@ function resetCurrentSession() {
     S.photos = [];
     S.capturing = false;
     activeSession = null;
+    document.body.classList.remove('capturing-mode');
     modal.classList.add('hidden');
     photoCounter.classList.add('hidden');
     countdownNum.textContent = '';
@@ -383,37 +385,69 @@ function buildUI() {
         currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
         initCamera();
     });
+
+    $('btn-cancel-session').addEventListener('click', () => {
+        if (S.capturing) {
+            sessionCancelled = true;
+        }
+    });
 }
 
 function renderPreview() {
     if (!previewCanvas) return;
-    if (window.getComputedStyle(previewCanvas).display === 'none') {
-        return;
-    }
+    const isSidebarHidden = window.getComputedStyle(previewCanvas).display === 'none';
+    const isCapturing = document.body.classList.contains('capturing-mode');
+    
+    if (isSidebarHidden && !isCapturing) return;
+
     const scale = isMobileDevice ? 0.1 : 0.16;
-    if (previewCanvas.parentElement.classList.contains('preview-scroll-container')) {
-        if (S.layout.startsWith('strip')) {
-            previewCanvas.parentElement.classList.add('is-strip');
-        } else {
-            previewCanvas.parentElement.classList.remove('is-strip');
-        }
+    
+    // Use activeSession data when capturing (photos go to session.photos, not S.photos)
+    const photos = activeSession ? activeSession.photos : S.photos;
+    const quote = activeSession ? activeSession.quote : S.quote;
+    
+    const canvases = [];
+    if (!isSidebarHidden) canvases.push(previewCanvas);
+    
+    const capCanvas = $('capture-preview-canvas');
+    if (capCanvas && isCapturing) {
+        canvases.push(capCanvas);
     }
     
-    Composition.renderComposition(previewCanvas, {
-        layoutKey: S.layout,
-        sessionCount: getSessionCount(),
-        frameBg: S.frameBg,
-        photoBorder: S.photoBorder,
-        text: S.text,
-        date: S.date,
-        quote: S.quote,
-        previewMode: true,
-        liveVideo: video,
-        liveFilter: getCombinedFilter(),
-        mirrorLive: currentFacingMode === 'user',
-        scale,
-        getPhoto: index => S.photos[index] || (index === 0 && video.videoWidth && video.videoHeight ? video : previewPlaceholders[index % previewPlaceholders.length]),
-    });
+    for (const cvs of canvases) {
+        let cvsScale = scale;
+        
+        if (cvs === previewCanvas && cvs.parentElement.classList.contains('preview-scroll-container')) {
+            if (S.layout.startsWith('strip')) {
+                cvs.parentElement.classList.add('is-strip');
+            } else {
+                cvs.parentElement.classList.remove('is-strip');
+            }
+        } else if (cvs === capCanvas) {
+            cvsScale = isMobileDevice ? 0.08 : 0.12;
+            if (S.layout.startsWith('strip')) {
+                cvs.parentElement.classList.add('is-strip');
+            } else {
+                cvs.parentElement.classList.remove('is-strip');
+            }
+        }
+        
+        Composition.renderComposition(cvs, {
+            layoutKey: S.layout,
+            sessionCount: getSessionCount(),
+            frameBg: S.frameBg,
+            photoBorder: S.photoBorder,
+            text: S.text,
+            date: S.date,
+            quote: quote,
+            previewMode: true,
+            liveVideo: video,
+            liveFilter: getCombinedFilter(),
+            mirrorLive: currentFacingMode === 'user',
+            scale: cvsScale,
+            getPhoto: index => photos[index] || (index === 0 && video.videoWidth && video.videoHeight ? video : previewPlaceholders[index % previewPlaceholders.length]),
+        });
+    }
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -421,6 +455,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function captureSession() {
     if (S.capturing) return;
     S.capturing = true;
+    sessionCancelled = false;
+    document.body.classList.add('capturing-mode');
     setCaptureLocked(true);
     const session = createSessionSnapshot();
     activeSession = session;
@@ -434,9 +470,12 @@ async function captureSession() {
         session.quote = "Creating beautiful memories ✨";
     }
 
+    if (sessionCancelled) { resetCurrentSession(); return; }
+
     const layout = Composition.getLayoutMetrics(session.layout, session.sessionCount);
     photoCounter.classList.remove('hidden');
 
+    let cancelled = false;
     for (let i = 0; i < layout.count; i++) {
         counterText.textContent = `${i+1} / ${layout.count}`;
 
@@ -445,7 +484,9 @@ async function captureSession() {
             countdownNum.classList.add('show');
             AudioKit.beep(880);
             await sleep(1000);
+            if (sessionCancelled) { cancelled = true; break; }
         }
+        if (cancelled) break;
         countdownNum.classList.remove('show');
 
         AudioKit.beep(1760, 0.15);
@@ -455,8 +496,17 @@ async function captureSession() {
         renderPreview();
         await sleep(200);
         flashEl.classList.remove('flash');
+        if (sessionCancelled) { cancelled = true; break; }
 
-        if (i < layout.count - 1) await sleep(700);
+        if (i < layout.count - 1) {
+            await sleep(700);
+            if (sessionCancelled) { cancelled = true; break; }
+        }
+    }
+
+    if (cancelled) {
+        resetCurrentSession();
+        return;
     }
 
     photoCounter.classList.add('hidden');
@@ -467,6 +517,7 @@ async function captureSession() {
     S.quote = session.quote;
     S.capturing = false;
     activeSession = null;
+    document.body.classList.remove('capturing-mode');
     setCaptureLocked(false);
     renderPreview();
 }
@@ -565,6 +616,23 @@ window.viewInGallery = function(id) {
     btnGalleryDownload.download = `PhotoBoothAjah_${id}.png`;
     galleryViewModal.classList.remove('hidden');
 };
+
+// Reinitialize camera if it was lost or frozen (crucial for Android when waking up or switching apps)
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && !S.capturing) {
+        let needsRestart = !currentStream;
+        if (currentStream) {
+            const hasDeadTracks = currentStream.getTracks().some(t => t.readyState === 'ended' || !t.enabled);
+            if (hasDeadTracks || video.paused || video.ended) {
+                needsRestart = true;
+            }
+        }
+        if (needsRestart) {
+            console.log("Detecting inactive/paused camera on visibility restore, restarting camera...");
+            await initCamera();
+        }
+    }
+});
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });

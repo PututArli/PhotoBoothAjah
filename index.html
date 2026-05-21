@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>PhotoBoothAjah</title>
 <script>
     if (/Android/i.test(navigator.userAgent)) document.documentElement.classList.add('android');
@@ -37,6 +37,10 @@
             <div id="countdown-overlay"><span id="countdown-num"></span></div>
             <div id="photo-counter" class="photo-counter hidden">
                 <span id="counter-text">1 / 3</span>
+            </div>
+            <button id="btn-cancel-session" class="cancel-session-btn"><i class="ph ph-x"></i> Batal</button>
+            <div class="capture-preview-container">
+                <canvas id="capture-preview-canvas"></canvas>
             </div>
         </div>
     </main>
@@ -189,7 +193,7 @@
         <button id="gallery-close" class="modal-x">&times;</button>
         <h2><i class="ph ph-images"></i> Galeri Sesi</h2>
         <div class="gallery-grid" id="gallery-grid">
-            <p class="muted-text">Belum ada foto yang disimpan.</p>
+            <p class="muted-text" style="grid-column: 1 / -1; text-align: center; width: 100%;">Belum ada foto yang disimpan.</p>
         </div>
     </div>
 </div>
