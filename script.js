@@ -387,10 +387,18 @@ function buildUI() {
 
 function renderPreview() {
     if (!previewCanvas) return;
-    if (document.documentElement.classList.contains('android') || window.getComputedStyle(previewCanvas).display === 'none') {
+    if (window.getComputedStyle(previewCanvas).display === 'none') {
         return;
     }
     const scale = isMobileDevice ? 0.1 : 0.16;
+    if (previewCanvas.parentElement.classList.contains('preview-scroll-container')) {
+        if (S.layout.startsWith('strip')) {
+            previewCanvas.parentElement.classList.add('is-strip');
+        } else {
+            previewCanvas.parentElement.classList.remove('is-strip');
+        }
+    }
+    
     Composition.renderComposition(previewCanvas, {
         layoutKey: S.layout,
         sessionCount: getSessionCount(),

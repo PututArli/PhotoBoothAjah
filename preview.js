@@ -60,6 +60,14 @@ function renderPreview() {
     const isSmall = window.innerWidth < 768;
     const scale = previewCollapsed ? (isSmall ? 0.35 : 0.6) : 1;
 
+    if (canvas.parentElement.classList.contains('preview-scroll-container')) {
+        if (state.layout.startsWith('strip')) {
+            canvas.parentElement.classList.add('is-strip');
+        } else {
+            canvas.parentElement.classList.remove('is-strip');
+        }
+    }
+
     Composition.renderComposition(canvas, {
         layoutKey: state.layout,
         sessionCount: 3,
@@ -73,14 +81,7 @@ function renderPreview() {
         scale: scale,
     });
 
-    // adjust canvas intrinsic sizing to avoid overflow on mobile browsers
-    if (isSmall) {
-        canvas.style.maxHeight = previewCollapsed ? '120px' : 'calc(45dvh)';
-        canvas.style.width = 'auto';
-    } else {
-        canvas.style.maxHeight = '';
-        canvas.style.width = '';
-    }
+    // CSS dynamically handles the container max-height and scrolling now.
 }
 
 function clearActive(selector) {
