@@ -40,6 +40,7 @@ const isMobileDevice = window.matchMedia('(max-width: 768px)').matches || /Andro
 let previewPlaceholders = [];
 let activeSession = null;
 let sessionCancelled = false;
+let currentFetchController = null;
 
 const colorFilters = [
     { id:'none', label:'Normal', css:'none' },
@@ -389,6 +390,11 @@ function buildUI() {
     $('btn-cancel-session').addEventListener('click', () => {
         if (S.capturing) {
             sessionCancelled = true;
+            if (currentFetchController) {
+                currentFetchController.abort();
+                currentFetchController = null;
+            }
+            resetCurrentSession();
         }
     });
 }
@@ -463,11 +469,18 @@ async function captureSession() {
     renderPreview();
     
     try {
-        const res = await fetch('https://dummyjson.com/quotes/random');
+        currentFetchController = new AbortController();
+        const timeoutId = setTimeout(() => {
+            if (currentFetchController) currentFetchController.abort();
+        }, 2000);
+        const res = await fetch('https://dummyjson.com/quotes/random', { signal: currentFetchController.signal });
+        clearTimeout(timeoutId);
         const data = await res.json();
         session.quote = data.quote;
     } catch(e) {
         session.quote = "Creating beautiful memories ✨";
+    } finally {
+        currentFetchController = null;
     }
 
     if (sessionCancelled) { resetCurrentSession(); return; }
