@@ -34,7 +34,10 @@ const AudioKit = window.StudioBoothAudio;
 
 let currentStream = null;
 let currentFacingMode = 'user';
+let currentDeviceId = null;
+let videoDevices = [];
 let savedGallery = [];
+const cameraSelect = $('camera-select');
 let currentViewId = null;
 const isMobileDevice = window.matchMedia('(max-width: 768px)').matches || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 let previewPlaceholders = [];
@@ -119,11 +122,42 @@ async function initCamera() {
     });
 
     try {
+        if (videoDevices.length === 0) {
+            try {
+                // Request initially to get permission and see all labels
+                await navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then(s => s.getTracks().forEach(t => t.stop()));
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                videoDevices = devices.filter(d => d.kind === 'videoinput');
+                
+                if (cameraSelect) {
+                    cameraSelect.innerHTML = videoDevices.map((d, i) => `<option value="${d.deviceId}">${d.label || 'Kamera ' + (i + 1)}</option>`).join('');
+                    if (videoDevices.length > 0) {
+                        currentDeviceId = videoDevices[0].deviceId;
+                        cameraSelect.value = currentDeviceId;
+                    }
+                    cameraSelect.addEventListener('change', (e) => {
+                        currentDeviceId = e.target.value;
+                        initCamera();
+                    });
+                }
+            } catch (e) {
+                console.warn('Could not enumerate devices:', e);
+            }
+        }
+
         const idealWidth = isMobileDevice ? 640 : 1280;
         const idealHeight = isMobileDevice ? 480 : 720;
+        
+        let videoConstraints = { width:{ideal: idealWidth}, height:{ideal: idealHeight} };
+        if (currentDeviceId) {
+            videoConstraints.deviceId = { exact: currentDeviceId };
+        } else {
+            videoConstraints.facingMode = currentFacingMode;
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({
-            video:{ width:{ideal: idealWidth}, height:{ideal: idealHeight}, facingMode: currentFacingMode },
-            audio:false
+            video: videoConstraints,
+            audio: false
         });
         currentStream = stream;
         video.srcObject = stream;
@@ -383,8 +417,16 @@ function buildUI() {
     });
 
     btnSwitchCam.addEventListener('click', () => {
-        currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-        initCamera();
+        if (videoDevices.length > 1) {
+            const currentIndex = videoDevices.findIndex(d => d.deviceId === currentDeviceId);
+            const nextIndex = (currentIndex + 1) % videoDevices.length;
+            currentDeviceId = videoDevices[nextIndex].deviceId;
+            if (cameraSelect) cameraSelect.value = currentDeviceId;
+            initCamera();
+        } else {
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            initCamera();
+        }
     });
 
     $('btn-cancel-session').addEventListener('click', () => {
