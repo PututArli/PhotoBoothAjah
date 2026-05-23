@@ -23,6 +23,7 @@ const galleryModal = $('gallery-modal');
 const galleryClose = $('gallery-close');
 const galleryGrid = $('gallery-grid');
 const galleryBadge = $('gallery-badge');
+const btnFullscreen = $('btn-fullscreen');
 
 const galleryViewModal = $('gallery-view-modal');
 const galleryViewImg = $('gallery-view-img');
@@ -171,7 +172,14 @@ async function initCamera() {
         await waitForCameraReady();
         markCameraReady();
     } catch(e) {
-        console.error('Camera init failed:', e);
+        console.warn('Camera init with exact deviceId failed, falling back to facingMode...', e);
+        if (currentDeviceId) {
+            // Android often fails with exact deviceId, fallback to facingMode
+            currentDeviceId = null;
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            return initCamera();
+        }
+        console.error('Camera init failed completely:', e);
         loader.innerHTML = '<p style="color:#f87171; text-align:center">Gagal memuat kamera.<br>Pastikan izin kamera diberikan.<br><button onclick="location.reload()" style="margin-top:12px;padding:8px 16px;border-radius:8px;background:#fff;color:#000;border:none;cursor:pointer;font-weight:600">Refresh</button></p>';
     }
 }
@@ -425,6 +433,7 @@ function buildUI() {
             initCamera();
         } else {
             currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            currentDeviceId = null; // Ensure we use facingMode fallback
             initCamera();
         }
     });
@@ -688,6 +697,35 @@ document.addEventListener('visibilitychange', async () => {
         }
     }
 });
+
+// Fullscreen logic
+if (btnFullscreen) {
+    btnFullscreen.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => console.warn(err));
+        } else {
+            document.exitFullscreen();
+        }
+    });
+}
+
+// Unlock audio context on Android
+let audioUnlocked = false;
+document.addEventListener('pointerdown', () => {
+    if (!audioUnlocked && window.StudioBoothAudio && window.StudioBoothAudio.beep) {
+        window.StudioBoothAudio.beep(0, 0.01);
+        audioUnlocked = true;
+    }
+}, { once: true });
+
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+            console.log('SW registration failed: ', err);
+        });
+    });
+}
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });

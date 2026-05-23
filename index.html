@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d12">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <title>PhotoBoothAjah</title>
 <script>
     if (/Android/i.test(navigator.userAgent)) document.documentElement.classList.add('android');
@@ -24,6 +27,10 @@
 <button id="btn-open-gallery" class="floating-gallery-btn">
     <i class="ph ph-images"></i>
     <span id="gallery-badge" class="badge hidden">0</span>
+</button>
+
+<button id="btn-fullscreen" class="floating-fullscreen-btn" title="Layar Penuh">
+    <i class="ph ph-corners-out"></i>
 </button>
 
 <div class="app">
