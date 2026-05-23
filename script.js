@@ -587,29 +587,53 @@ async function captureSession() {
 }
 
 function takePhoto(session) {
-    const comp = document.createElement('canvas');
-    comp.width = video.videoWidth;
-    comp.height = video.videoHeight;
-    const cc = comp.getContext('2d');
+    const vW = video.videoWidth;
+    const vH = video.videoHeight;
+    if (!vW || !vH) return;
 
+    // Determine the display aspect ratio of the camera wrap at the moment of capture.
+    // During capturing-mode the camera-wrap is fixed/fullscreen, so its clientWidth/clientHeight
+    // reflect exactly what the user sees (object-fit: cover crops to this ratio).
+    const cameraWrap = document.querySelector('.camera-wrap');
+    const displayW = cameraWrap ? cameraWrap.clientWidth : vW;
+    const displayH = cameraWrap ? cameraWrap.clientHeight : vH;
+    const displayRatio = displayW / displayH;
+
+    // Compute the cover-crop in video-pixel space that matches the visible area on screen.
+    const videoRatio = vW / vH;
+    let cropX = 0, cropY = 0, cropW = vW, cropH = vH;
+    if (videoRatio > displayRatio) {
+        // Video is wider than display: crop left/right
+        cropW = vH * displayRatio;
+        cropX = (vW - cropW) / 2;
+    } else {
+        // Video is taller than display: crop top/bottom
+        cropH = vW / displayRatio;
+        cropY = (vH - cropH) / 2;
+    }
+
+    // Draw the cropped (cover) region into a temp canvas, applying filter & mirror
+    const comp = document.createElement('canvas');
+    comp.width = Math.round(cropW);
+    comp.height = Math.round(cropH);
+    const cc = comp.getContext('2d');
     cc.filter = getCombinedFilterFor(session);
-    Composition.drawSourceIntoSlot(cc, video, 0, 0, comp.width, comp.height, session.facingMode === 'user');
+    if (session.facingMode === 'user') {
+        // Mirror horizontally
+        cc.translate(comp.width, 0);
+        cc.scale(-1, 1);
+    }
+    cc.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, comp.width, comp.height);
     cc.filter = 'none';
 
+    // Scale to the standard output resolution (1200×900 or matching display ratio)
     const photoW = 1200;
-    const photoH = 900;
+    const photoH = Math.round(photoW / displayRatio);
     const photo = document.createElement('canvas');
     photo.width = photoW;
     photo.height = photoH;
     const pc = photo.getContext('2d');
-
-    const vR = comp.width / comp.height;
-    const cR = photoW / photoH;
-    let sx=0, sy=0, sW=comp.width, sH=comp.height;
-    if (vR > cR) { sW = sH * cR; sx = (comp.width - sW)/2; }
-    else { sH = sW / cR; sy = (comp.height - sH)/2; }
-
-    pc.drawImage(comp, sx, sy, sW, sH, 0, 0, photoW, photoH);
+    pc.drawImage(comp, 0, 0, photoW, photoH);
     session.photos.push(photo);
 }
 
